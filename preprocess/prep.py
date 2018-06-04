@@ -13,26 +13,112 @@ import sys
 import os
 import warnings
 warnings.filterwarnings('ignore')
+import os.path
 
 
 class prep_mod:
     def __init__(self, path):
         self.path=path
-        
-    def train_test_split(self,metadata):
-        ratio=0.7
-        tmp_csv=pd.read_csv(self.path+"/"+metadata, index_col=0)
-        for id_d in range(1,tmp_csv.shape[1]):
-            tmp_csv.iloc[:,id_d].isnull()
-            id_phen=np.where(tmp_csv.iloc[:,id_d].notnull())[0]
-            len_id_phen=len(id_phen)
-            ind=tmp_csv.index[id_phen]
-            train=np.random.choice(ind, size=int(len_id_phen*ratio), replace=False)
-            test=np.random.choice(ind, size=int(len_id_phen*(1-ratio)), replace=False)
-            pd.DataFrame(train).to_csv(self.path+"/train_"+str(id_d)+".csv")
-            pd.DataFrame(test).to_csv(self.path+"/test_"+str(id_d)+".csv")
 
-    #delete duplicated columns      X_train = scale(X_train)
+    def input_preparation(self,metadata,id_drug, input_gene, structure, type_inp):
+        import pandas as pd
+        output=pd.DataFrame()
+        metadata_gn=pd.DataFrame()
+        
+        structure_inp=pd.DataFrame()
+        gene_inp=pd.DataFrame()
+        metadata_inp=pd.DataFrame()
+        
+        
+        if not os.path.isfile(self.path+"/"+metadata):
+            print("No metadata file")
+            return
+        else:
+            print("Reading metadata file")
+            metadata_inp= pd.read_csv(self.path+"/"+metadata,index_col=0)
+            print("Metadata file is imported")
+            
+        if not os.path.isfile(self.path+"/"+input_gene):
+            print("No accessory gene file")
+            return
+        else:
+            print("Reading accessory gene file")
+            gene_inp= pd.read_csv(self.path+"/"+input_gene,index_col=0)
+            print("Accessory gene file is imported")
+            
+        if not os.path.isfile(self.path+"/"+structure):
+            print("No structure file")
+            return
+        else: 
+            print("Reading population structure file")
+            structure_inp= pd.read_csv(self.path+"/"+structure,index_col=0)
+            print("Structure file is imported")
+            
+        if type_inp=="GYS":
+            #1/1/1
+            metadata_gn=metadata_inp.iloc[:,[int(id_drug)+1,1]]
+            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="S", value=0)
+            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="R", value=1)
+            output=metadata_gn.join(structure_inp,how='inner').join(gene_inp,how='inner')
+        elif type_inp=="GS":
+            #0/1/1
+            metadata_gn=metadata_inp.iloc[:,[int(id_drug)+1]]
+            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="S", value=0)
+            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="R", value=1)
+            output=metadata_gn.join(structure_inp,how='inner').join(gene_inp,how='inner')
+        elif type_inp=="GY":
+            #1/0/1
+            metadata_gn=metadata_inp.iloc[:,[int(id_drug)+1,1]]
+            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="S", value=0)
+            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="R", value=1)
+            output=metadata_gn.join(gene_inp,how='inner')
+            print(gene_inp.shape)
+            print(metadata_inp.shape)
+            
+        elif type_inp=="SY":
+            #0/1/0
+            metadata_gn=metadata_inp.iloc[:,[int(id_drug)+1]]
+            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="S", value=0)
+            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="R", value=1)
+            output=metadata_gn.join(structure_inp,how='inner')
+                 
+        elif type_inp=="G":
+            #0/0/1
+            metadata_gn=metadata_inp.iloc[:,[int(id_drug)+1]]
+            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="S", value=0)
+            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="R", value=1)
+            output=metadata_gn.join(gene_inp,how='inner')
+        elif type_inp=="S":
+            #1/1/0
+            metadata_gn=metadata_inp.iloc[:,[int(id_drug)+1,1]]
+            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="S", value=0)
+            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="R", value=1)
+            output=metadata_gn.join(structure_inp,how='inner')
+        
+        output.to_csv(self.path+"/curated_input_"+ type_inp+".csv")
+        print(output.shape)
+        return
+    
+    def label_encoder(self, structure):
+        from sklearn.preprocessing import LabelEncoder
+        structure_inp=pd.DataFrame()
+        if not os.path.isfile(self.path+"/"+structure):
+            print("No structure file")
+            return
+        else: 
+            print("Reading population structure file")
+            structure_inp= pd.read_csv(self.path+"/"+structure,index_col=0)
+            print("Structure file is imported")
+        
+        le=LabelEncoder()
+        for col in structure_inp.columns.values:
+            le.fit(structure_inp[col].values)
+            structure_inp[col]=le.transform(structure_inp[col])
+        structure_inp.to_csv(self.path+"/"+structure+"_labelencoded.csv")
+        print("Structure file is written")
+        return
+    
+    
     def dedup_preprocess(self, Rtab,Gene_PA,del_part=True):     
         print("Reading gene_presence_absence.Rtab file")
         tmp_tab=pd.read_table(self.path+"/gene_presence_absence.Rtab", index_col=0)
@@ -51,59 +137,3 @@ class prep_mod:
         print("Number of genes after clsutering: %d" % tmp_dedup.shape[0])
         Gene_inp=tmp_dedup.transpose()
 
-
-    def label_encoder(path, structure):
-        from sklearn.preprocessing import LabelEncoder
-        output_st=pd.read_csv(path+structure,index_col=0)
-        le=LabelEncoder()
-        for col in output_st.columns.values:
-            le.fit(output_st[col].values)
-            output_st[col]=le.transform(output_st[col])
-        return output_st
-
-#Year-Structure-Gene
-    def input_preparation(metadata,id_drug, input_gene, structure, type_inp):
-        import pandas as pd
-        output=pd.DataFrame()
-        metadata_gn=pd.DataFrame()
-
-        if type_inp==111:
-            #1/1/1
-            metadata_gn=metadata.iloc[:,[id_drug+1,1]]
-            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="S", value=0)
-            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="R", value=1)
-            output=metadata_gn.join(structure,how='inner').join(input_gene,how='inner')
-        elif type_inp==011:
-            #0/1/1
-            metadata_gn=metadata.iloc[:,[id_drug+1]]
-            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="S", value=0)
-            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="R", value=1)
-            output=metadata_gn.join(structure,how='inner').join(input_gene,how='inner')
-        elif type_inp==101:
-            #1/0/1
-            metadata_gn=metadata.iloc[:,[id_drug+1,1]]
-            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="S", value=0)
-            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="R", value=1)
-            output=metadata_gn.join(input_gene,how='inner')
-        elif type_inp==010:
-            #0/1/0
-            metadata_gn=metadata.iloc[:,[id_drug+1]]
-            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="S", value=0)
-            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="R", value=1)
-            output=metadata_gn.join(structure,how='inner')
-        elif type_inp==001:
-            #0/0/1
-            metadata_gn=metadata.iloc[:,[id_drug+1]]
-            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="S", value=0)
-            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="R", value=1)
-            output=metadata_gn.join(input_gene,how='inner')
-        elif type_inp==010:
-            #1/1/0
-            metadata_gn=metadata.iloc[:,[id_drug+1,1]]
-            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="S", value=0)
-            metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="R", value=1)
-            output=metadata_gn.join(structure,how='inner')
-        return output
-    
-
-    
