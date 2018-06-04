@@ -31,13 +31,16 @@ PanPred preprocess [options]
 
 Options:
         -p STR   path to csv and Rtab files (Roary output files), default value: current path
-        -c STR   create: create input file,  encode: label encoder for population structure
+        -c STR   create: create input file,  encode: label encoder for population structure, dedup: prepare Roary output
         -d STR   drug id number in the metadata file
         -i STR   input model ['GY', 'GYS', 'G','GS', 'S', 'SY']
         
         -m STR   name of the metadata file 
         -g STR   name of the accessory gene file
         -s STR   name of the population strcuture file
+        
+        -r STR   name of Rtab file from Roary output (.Rtab)
+        -a STR   name of gene presence absence file from Roary output (.csv)
 """
 
 """Map sequencing reads to the reference for multiple sets of reads """ 
@@ -49,10 +52,12 @@ def preprocess_f():
     parser.add_option("-i", "--type", type='choice', choices=('GY', 'GYS', 'G','GS', 'S', 'SY'), dest="type", default=None)
     parser.add_option("-d", "--drug", type='string', dest="drug", default=None)
 
-    
     parser.add_option("-m", "--metadata", type="string", dest="metadata", default=None)
     parser.add_option("-g", "--gene", type="string", dest="gene", default=None)
     parser.add_option("-s", "--structure", type="string", dest="structure", default=None)
+    
+    parser.add_option("-r", "--Rtab", type="string", dest="Rtab", default=None)
+    parser.add_option("-a", "--Accgen", type="string", dest="Accgen", default=None)
     
     (options, args) = parser.parse_args()
     
@@ -60,11 +65,13 @@ def preprocess_f():
         prep_mod(options.path).input_preparation(options.metadata,options.drug,options.gene, options.structure, options.type)       
     elif options.input == "encode" and  options.structure != None and options.type == None and options.drug == None and options.gene == None and options.metadata == None:
         prep_mod(options.path).label_encoder(options.structure)
+    elif options.input == "dedup" and  options.Rtab != None and options.structure == None and options.type == None and options.drug == None and options.Accgene != None and options.gene == None and options.metadata == None:
+        prep_mod(options.path).dedup_preprocess(options.Rtab,options.Accgen)
     else:
         print(USAGE_PREPROCESS)
         return
 
-
+#dedup_preprocess(self, Rtab,Gene_PA,del_part=True):
 
 USAGE_PREDICT_LR = """Calls a Machine Learning modelLogistic regression
 Usage:

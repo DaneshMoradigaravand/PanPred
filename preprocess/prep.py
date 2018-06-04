@@ -120,21 +120,34 @@ class prep_mod:
         return
     
     
-    def dedup_preprocess(self, Rtab,Gene_PA,del_part=True):     
-        print("Reading gene_presence_absence.Rtab file")
-        tmp_tab=pd.read_table(self.path+"/gene_presence_absence.Rtab", index_col=0)
-        if del_part==True:
-            print("Delete non-unique Genes activated")
-            print("Reading gene_presence_absence.csv file")
-            tmp_csv=pd.read_csv(self.path+"/gene_presence_absence.csv", usecols = ["Gene","Non-unique Gene name"])
-            id_un=np.where(tmp_csv["Non-unique Gene name"].isnull())[0]
-            print("Number of genes before removing genes: %d" % tmp_tab.shape[0])
-            tmp_tab=tmp_tab.iloc[id_un,:]
-            print("Number of genes after removing genes: %d" % tmp_tab.shape[0])
+    def dedup_preprocess(self, Rtab,Gene_PA):
+        tmp_tab=pd.DataFrame()
+        if not os.path.isfile(self.path+"/"+Rtab):
+            print("No Rtab file")
+            return
+        else:
+            print("Reading Rtab file")
+            tmp_tab= pd.read_csv(self.path+"/"+Rtab,index_col=0)
+            print("Rtab file is imported")
+            
+        if not os.path.isfile(self.path+"/"+Gene_PA):
+            print("No accessory gene file")
+            return
+        
+        print("Reading Rtab file")
+        
+        print("Delete non-unique Genes activated")
+        print("Accessory gene file")
+        tmp_csv=pd.read_csv(self.path+"/"+Gene_PA, usecols = ["Gene","Non-unique Gene name"])
+        id_un=np.where(tmp_csv["Non-unique Gene name"].isnull())[0]
+        print("Number of genes before removing genes: %d" % tmp_tab.shape[0])
+        tmp_tab=tmp_tab.iloc[id_un,:]
+        print("Number of genes after removing genes: %d" % tmp_tab.shape[0])
 
-        print("\nRemoving gene clusters with identical frequency")
-        print("Number of genes before clsutering: %d" % tmp_tab.shape[0])
+        print("\nRemoving correlated gene clusters")
+        print("Number of genes before clustering: %d" % tmp_tab.shape[0])
         tmp_dedup=tmp_tab.drop_duplicates()
-        print("Number of genes after clsutering: %d" % tmp_dedup.shape[0])
+        print("Number of genes after clustering: %d" % tmp_dedup.shape[0])
         Gene_inp=tmp_dedup.transpose()
+        Gene_inp.to_csv(self.path+"/Curated_accessory_gene.csv")
 
