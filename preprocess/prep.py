@@ -56,7 +56,8 @@ class prep_mod:
             
         if type_inp=="GYS":
             #1/1/1
-            metadata_gn=metadata_inp.iloc[:,[int(id_drug)+1,1]]
+            print("salam")
+            metadata_gn=metadata_inp.iloc[:,[int(id_drug)+1,0]]
             metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="S", value=0)
             metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="R", value=1)
             output=metadata_gn.join(structure_inp,how='inner').join(gene_inp,how='inner')
@@ -68,14 +69,14 @@ class prep_mod:
             output=metadata_gn.join(structure_inp,how='inner').join(gene_inp,how='inner')
         elif type_inp=="GY":
             #1/0/1
-            metadata_gn=metadata_inp.iloc[:,[int(id_drug)+1,1]]
+            metadata_gn=metadata_inp.iloc[:,[int(id_drug)+1,0]]
             metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="S", value=0)
             metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="R", value=1)
             output=metadata_gn.join(gene_inp,how='inner')
             print(gene_inp.shape)
             print(metadata_inp.shape)
             
-        elif type_inp=="SY":
+        elif type_inp=="S":
             #0/1/0
             metadata_gn=metadata_inp.iloc[:,[int(id_drug)+1]]
             metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="S", value=0)
@@ -88,9 +89,9 @@ class prep_mod:
             metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="S", value=0)
             metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="R", value=1)
             output=metadata_gn.join(gene_inp,how='inner')
-        elif type_inp=="S":
+        elif type_inp=="SY":
             #1/1/0
-            metadata_gn=metadata_inp.iloc[:,[int(id_drug)+1,1]]
+            metadata_gn=metadata_inp.iloc[:,[int(id_drug)+1,0]]
             metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="S", value=0)
             metadata_gn.iloc[:,0]=metadata_gn.iloc[:,0].replace(to_replace="R", value=1)
             output=metadata_gn.join(structure_inp,how='inner')
@@ -115,7 +116,7 @@ class prep_mod:
             le.fit(structure_inp[col].values)
             structure_inp[col]=le.transform(structure_inp[col])
         structure_inp.to_csv(self.path+"/"+structure+"_labelencoded.csv")
-        print("Structure file is written")
+        print("Structure file is created")
         return
     
     

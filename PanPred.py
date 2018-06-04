@@ -22,7 +22,7 @@ Usage: PanPred <command> [options]
 
 Command:
 \t\t    preprocess\t    preprocess and creates the NGS input data for Machine Learning tools
-\t\t    predict_LR _RF _GB _DL\t    Calls a Machine Learning model, i.e. Logistic regression, RandomForests, GradientBossted and Deep Learning, to predict resistance from input
+\t\t    predict_LR _RF _GB _DL\t    Calls a Machine Learning model, i.e. Logistic regression, RandomForests, GradientBoosted and Deep Learning, to predict resistance from input
 """
 
 USAGE_PREPROCESS = """Preprocess and creates the NGS input data for Machine Learning tools
@@ -58,7 +58,7 @@ def preprocess_f():
     
     if options.input == "create" and options.type != None and options.drug != None and options.metadata != None and  options.gene != None and  options.structure != None :
         prep_mod(options.path).input_preparation(options.metadata,options.drug,options.gene, options.structure, options.type)       
-    elif options.input == "encode" and  options.structure != None:
+    elif options.input == "encode" and  options.structure != None and options.type == None and options.drug == None and options.gene == None and options.metadata == None:
         prep_mod(options.path).label_encoder(options.structure)
     else:
         print(USAGE_PREPROCESS)
