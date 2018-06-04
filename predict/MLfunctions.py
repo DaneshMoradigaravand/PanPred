@@ -179,7 +179,7 @@ class DL:
     def __init__(self, path):
         self.path=path
     
-    def DeepLearning_f(self,input_file, ratio):
+    def DeepLearning_f(self,input_file, ratio, firstLayer, interlayer, dropout, numblayer):
         import pandas as pd
         from sklearn.ensemble import GradientBoostingClassifier
         from sklearn.metrics import precision_recall_fscore_support
@@ -193,11 +193,7 @@ class DL:
         from keras.utils.np_utils import to_categorical
         from keras.callbacks import EarlyStopping
         from keras.layers import Dropout
-        from sklearn.preprocessing import LabelEncoder 
-        from sklearn.metrics import precision_recall_fscore_support
-        from sklearn.utils.multiclass import unique_labels
-        from sklearn.metrics import confusion_matrix
-       
+
         feature_inp=pd.DataFrame()
         if not os.path.isfile(self.path+"/"+input_file):
             print("No input file")
@@ -218,11 +214,11 @@ class DL:
         X_train, X_test, y_train, y_test = train_test_split( X, y, test_size=ratio, random_state=42)
         
         model=Sequential()
-        model.add(Dense(600,activation='relu', input_shape=(X_train.shape[1],)))
-        model.add(Dropout(0.1, input_shape=(X_train.shape[1],)))
-        for i in range(1):
-            model.add(Dense(400,activation='relu'))
-            model.add(Dropout(0.05))
+        model.add(Dense(int(firstLayer),activation='relu', input_shape=(X_train.shape[1],)))
+        model.add(Dropout(dropout, input_shape=(X_train.shape[1],)))
+        for i in range(1,int(numblayer)):
+            model.add(Dense(int(interlayer),activation='relu'))
+            model.add(Dropout(dropout))
         model.add(Dense(2, activation = 'softmax'))
         model.compile(optimizer='adam', loss= 'binary_crossentropy', metrics=['accuracy'])
 
@@ -248,4 +244,5 @@ class DL:
 
         print(report)
         return
+
     

@@ -168,6 +168,11 @@ Options:
         -p STR    path to input file and destination for output file 
         -i STR    input file name
         -r FLT    train/test ratio
+        
+        -d FLT    drop_out
+        -n INT   number of nodes in the first layer
+        -m INT   number of nodes in intermediate layers
+        -l INT    number of layers
 """ 
 
 def predict_DL():
@@ -176,15 +181,21 @@ def predict_DL():
     parser.add_option("-i", "--input", type="string", dest="input", default=None)
     parser.add_option("-r", "--ratio", type="float", dest="split", default=0.7)
     
+    parser.add_option("-d", "--drop_out", type="float", dest="dropout", default=None)
+    parser.add_option("-n", "--firstlayer", type="string", dest="firstlayer", default=None)
+    parser.add_option("-m", "--interlayer", type="string", dest="interlayer", default=None)
+    parser.add_option("-l", "--layer", type="string", dest="layer", default=None)
+    
     (options, args) = parser.parse_args()
     
-    if options.split == None  or options.input == None :
+    if options.split == None  or options.input == None or options.dropout == None or options.firstlayer == None or options.interlayer==None or options.layer == None:
         print(USAGE_PREDICT_DL)
         return
     else:
-        DL(options.path).DeepLearning_f(options.input, options.split)
+        DL(options.path).DeepLearning_f(options.input, options.split, int(options.firstlayer),int(options.interlayer),options.dropout,int(options.layer)  )
 
-   
+#    def DeepLearning_f(self,input_file, ratio, firstLayer, interlayer, dropout, numblayer):
+
     
 def main():
     if len(sys.argv) < 2:
