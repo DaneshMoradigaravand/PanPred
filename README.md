@@ -1,1 +1,9 @@
-# test
+# Precise prediction of antibiotic resistance in Escherichia coli from full genome sequences
+Danesh Moradigaravand
+
+The emergence of microbial antibiotic resistance is a global health threat. In clinical settings, the key to controlling spread of resistant strains is accurate and rapid detection. As traditional culture-based methods are time consuming, genetic approaches have recently been developed for this task. The diagnosis is typically made by measuring a few known determinants previously identified from whole genome sequencing, and thus is restricted to existing information on biological mechanisms. To overcome this limitation, we employed machine learning models to predict resistance to 11 compounds across four classes of antibiotics from existing and novel whole genome sequences of 1936 E. coli strains. We considered a range of methods, and examined population structure, isolation year, gene content, and polymorphism information as predictors. Gradient boosted decision trees consistently outperformed alternative models with an average F1 score of 0.88 on held-out data (range 0.66-0.96). While the best models most frequently employed all inputs, an average F1 score of 0.73 could be obtained using population structure information alone. Single nucleotide variation data were less useful, and failed to improve prediction for ten out of 11 antibiotics. These results demonstrate that antibiotic resistance in E. coli can be accurately predicted from whole genome sequences without a priori knowledge of mechanisms, and that both genomic and epidemiological data are informative. This paves way to integrating machine learning approaches into diagnostic tools in the clinic.
+
+The test_data directory contains input files and basic ML commands.
+
+/test_data: input data used in the manuscript
+/Rcode: R code for population structure matrix generator.
