@@ -7,3 +7,10 @@ The test_data directory contains input files and basic ML commands.
 
 /test_data: input data used in the manuscript
 /Rcode: R code for population structure matrix generator.
+
+/CARD_resistance	CARD resistance results
+/GB_tuning.csv	GB (Gradient boosted decision trees) hyperparameter tuning results 
+/LG_tuning.csv	LG (Logistic Regression) hyperparameter tuning results
+/NN_tuning.csv	NN (Deep Learning) hyperparameter tuning results
+/RF_tuning.csv	RF (Random Forests) hyperparameter tuning results
+
