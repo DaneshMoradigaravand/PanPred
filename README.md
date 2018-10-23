@@ -21,4 +21,4 @@ NN_tuning.csv	NN (Deep Learning) hyperparameter tuning results
 RF_tuning.csv	RF (Random Forests) hyperparameter tuning results
 
 
-Pan genome sequences may be found at : www.data.mendeley.com/datasets/t2pzcb37y8/1
+Pan genome sequences may be found at : https://data.mendeley.com/datasets/t2pzcb37y8/1
