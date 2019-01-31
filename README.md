@@ -22,3 +22,5 @@ RF_tuning.csv	RF (Random Forests) hyperparameter tuning results
 
 
 Pan genome sequences may be found at : https://data.mendeley.com/datasets/t2pzcb37y8/1
+
+Assembly files for newly sequenced genomes may be found at : https://data.mendeley.com/datasets/fhmbdc496y/1
