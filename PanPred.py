@@ -65,7 +65,7 @@ def preprocess_f():
         prep_mod(options.path).input_preparation(options.metadata,options.drug,options.gene, options.structure, options.type)       
     elif options.input == "encode" and  options.structure != None and options.type == None and options.drug == None and options.gene == None and options.metadata == None:
         prep_mod(options.path).label_encoder(options.structure)
-    elif options.input == "dedup" and  options.Rtab != None and options.structure == None and options.type == None and options.drug == None and options.Accgene != None and options.gene == None and options.metadata == None:
+    elif options.input == "dedup" and  options.Rtab != None and options.structure == None and options.type == None and options.drug == None and options.Accgen != None and options.gene == None and options.metadata == None:
         prep_mod(options.path).dedup_preprocess(options.Rtab,options.Accgen)
     else:
         print(USAGE_PREPROCESS)
