@@ -181,10 +181,8 @@ The test_data directory contains input files and basic ML commands.
 
 Esternal files are found 
 
-[Pan genome sequences](https://data.mendeley.com/datasets/t2pzcb37y8/1)
-- Pan genome sequences: https://data.mendeley.com/datasets/t2pzcb37y8/1
-
-- Assembly files for newly sequenced genomes: https://data.mendeley.com/datasets/fhmbdc496y/1
+- [Pan genome sequences](https://data.mendeley.com/datasets/t2pzcb37y8/1)
+- [Assembly files for newly sequenced genomes] (https://data.mendeley.com/datasets/fhmbdc496y/1)
 
 ----
 ### Contact <a name="contact"></a>
