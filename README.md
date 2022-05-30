@@ -1,7 +1,4 @@
-# Prediction of antibiotic resistance in Escherichia coli from large-scale pan-genome data
-Danesh Moradigaravand
-
-# Machine Learning aided Prediction of Plasmid Permsiveness 
+# Prediction of antibiotic resistance in *Escherichia coli* from large-scale pan-genome data
 
 ## Table of contents
 1. [Citation](#citation)
